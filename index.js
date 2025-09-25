@@ -1,7 +1,9 @@
 const express = require("express");
+const cors = require("cors");
 const dgram = require("dgram");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const UDP_IP = "192.168.100.222";
