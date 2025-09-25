@@ -1,3 +1,4 @@
+/*
 //Importación de libreria SQL
 const mysql = require('mysql2/promise');
 require('dotenv').config();
@@ -28,3 +29,4 @@ pool.on('connection', connection =>{
 
 
 module.exports = { pool };
+*/
