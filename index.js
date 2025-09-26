@@ -25,6 +25,10 @@ app.post("/enviar-boleto", (req, res) => {
   });
 });
 
+app.get("/ping", (req, res) => {
+  res.json({ ok: true, msg: "pong", ip: req.ip, time: new Date().toISOString() });
+});
+
 app.get('/', (req, res) => res.send('KAHLO MINIBACKEND'))
 
 app.listen(3000, () =>
