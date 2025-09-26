@@ -1,0 +1,554 @@
+/* ===============================
+   Definición de la paleta de colores
+   =============================== */
+:root {
+    --museo-red: #a01e24; /* Color rojo primario */
+    --museo-neutral: #1D1A14; /* Color neutral oscuro */
+    --text-color: #333;
+    --muted-color: #6c757d;
+}
+
+/* ===============================
+   Tipografías base
+   =============================== */
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    min-height: 100dvh;
+    background-color: #f0f0f0;
+    color: var(--text-color);
+    position: relative;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Oswald', sans-serif !important;
+    font-weight: 700 !important;
+}
+
+
+/* ===============================
+   Wrapper principal
+   =============================== */
+.wrapper {
+    max-width: 992px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 0px;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+.fixed-header { }
+
+/* ===============================
+   Fondo fijo
+   =============================== */
+.background-fixed {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 992px;
+    height: 55vh;
+    padding-bottom: 2rem;
+    background-image: url('../img/back_boletos.png');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+
+/* ===============================
+   Logo y encabezado
+   =============================== */
+.logo-container {
+    height: 20vh; 
+    margin: 0; 
+    padding: 0;
+    justify-content: center;
+    align-content: center;
+}
+
+.brand-logo {
+    width: auto;
+    max-height: 15vh;
+}
+
+.text-section {
+    padding: 0 15px;
+    height: 15vh;
+    justify-content: center;
+    align-content: center;
+}
+
+.pre-title {
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    color: var(--muted-color);
+}
+
+.text-section .title {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--museo-neutral);
+    font-weight: 700;
+}
+
+.text-section .subtitle {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--muted-color);
+    font-size: 1.1rem;
+}
+
+/* ===============================
+   Main Card - Nuevo diseño
+   =============================== */
+.main-card {
+    max-width: 450px; /* Ancho de la tarjeta principal */
+    width: 100%;
+    margin: 2rem auto; /* Margen para centrar y dar espacio */
+    padding: 2.5rem 1.5rem;
+    background-color: #fcfcfc;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    z-index: 1000;
+}
+
+.main-card .card-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--museo-neutral);
+    margin-bottom: 0.5rem;
+}
+
+.main-card .card-text {
+    font-size: 1rem;
+    color: var(--muted-color);
+    margin-bottom: 2rem;
+}
+
+.main-card .btn-outline-secondary {
+    color: var(--museo-neutral);
+    border-color: var(--museo-neutral);
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.main-card .btn-outline-secondary:hover {
+    background-color: var(--museo-neutral);
+    color: #fff;
+}
+
+/* Ajustes para la imagen del venado */
+.main-card .img-fluid.mt-4 {
+    max-height: 250px;
+}
+
+/* ===============================
+   Ajustes a secciones previas
+   =============================== */
+.tickets-section {
+    padding-top: 1rem;
+    padding-bottom: 3.5rem;
+}
+
+
+/* ===============================
+   Tickets Step 2 mejorado
+   =============================== */
+.ticket-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.ticket-card:hover {
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+.ticket-info {
+  text-align: left; /* 👈 asegura alineación izquierda */
+  flex: 1;          /* 👈 para que ocupe todo el espacio disponible */
+}
+.ticket-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--museo-neutral);
+}
+
+.ticket-price {
+  margin: 0.25rem 0 0;
+  color: var(--museo-red);
+  font-weight: 700;
+}
+
+.ticket-quantity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ticket-input {
+  width: 80px;               /* ancho fijo */
+  height: 38px;              /* igual a los botones */
+  text-align: center;        /* texto centrado */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0;                /* quita padding extra */
+  margin: 0;
+  font-weight: bold;
+  -moz-appearance: textfield; /* quita flechas Firefox */
+}
+
+.ticket-input::-webkit-outer-spin-button,
+.ticket-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;  /* quita flechas Chrome */
+  margin: 0;
+}
+
+.ticket-card select.ticket-input {
+  width: auto;          /* que se ajuste al texto */
+  min-width: 150px;     /* tamaño mínimo agradable */
+  font-weight: normal;  /* menos pesado que el número */
+  text-align: left;     /* opciones alineadas */
+}
+
+.btn-qty {
+  background: var(--museo-red);
+  color: #fff;
+  border: none;
+  width: 38px;              /* cuadrado */
+  height: 38px;
+  border-radius: 50%;
+  font-weight: bold;
+  display: flex;             /* centrado */
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.btn-qty:hover {
+  background: #8f191e;
+}
+
+/* Inputs largos dentro de ticket-card */
+.ticket-card .ticket-input.w-auto {
+  min-width: 200px;
+  font-weight: normal;
+  padding: 0.6rem 0.8rem;
+}
+
+/* Cuando el card es de checkboxes, que se vea como bloque */
+.ticket-card.flex-column {
+  align-items: flex-start !important;
+}
+
+.ticket-card.flex-column .form-check {
+  margin-bottom: 0.5rem;
+}
+
+/* Resumen estilizado */
+.ticket-card.highlight-card {
+  background: #fff5f5;
+  border: 2px solid var(--museo-red);
+}
+
+.ticket-card.highlight-card .ticket-title {
+  color: var(--museo-red);
+}
+
+#step-content-4 .ticket-card .ticket-price {
+  margin: 0;
+  font-weight: 600;
+  color: var(--museo-neutral);
+}
+
+#step-content-4 .highlight-card .ticket-price {
+  color: var(--museo-red);
+  font-weight: 700;
+}
+
+/* Calendario dentro de ticket-card */
+#step-content-1 .ticket-card {
+  padding: 2rem 1rem;
+}
+
+#step-content-1 #calendar {
+  max-width: 100%;
+}
+
+#fecha-seleccionada-info {
+  color: var(--museo-neutral);
+}
+
+
+/* ===============================
+   Footer fijo
+   =============================== */
+.fixed-footer {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 992px;
+    background-color: var(--museo-neutral);
+    padding: 10px 0;
+    text-align: center;
+    z-index: 10;
+    color: white;
+}
+
+.fixed-footer a {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: var(--muted-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.fixed-footer a:hover {
+    color: var(--museo-red);
+}
+
+.footer-content p a {
+    color: white !important;
+}
+
+/* ===============================
+   Formulario
+   =============================== */
+.form-container {
+    background-color: #fff;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    width: 65%;
+    margin: 0rem auto 5rem;
+}
+
+/* Barra de progreso */
+.progress-bar-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 2rem auto 3rem;
+    max-width: 400px;
+}
+
+.progress-step {
+    flex: 1;
+    max-width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #f1f1f1;
+    border: 2px solid #ddd;
+    color: var(--muted-color);
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .3s ease;
+}
+
+.progress-step.active {
+    background: var(--museo-red);
+    border-color: var(--museo-red);
+    color: #fff;
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(160, 30, 36, 0.4);
+}
+
+/* Steps */
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+/* Labels & Inputs */
+label.form-label, .col-form-label {
+    font-weight: 600;
+    color: var(--museo-neutral);
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--museo-red);
+    box-shadow: 0 0 0 0.25rem rgba(160, 30, 36, 0.25);
+}
+
+/* Botones */
+.next-step-btn, .prev-step-btn {
+    max-width: 18rem;
+    margin: 0 auto;
+    padding: 0.8rem 1.2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all .3s ease;
+}
+
+.next-step-btn {
+    background: var(--museo-red);
+    border: none;
+    color: #fff;
+}
+
+.next-step-btn:hover {
+    background: #8f191e;
+    transform: translateY(-2px);
+}
+
+.prev-step-btn {
+  background: transparent;
+  border: 2px solid var(--muted-color);
+  color: var(--muted-color);
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.7rem 1.4rem;
+  transition: all 0.3s ease;
+}
+
+.prev-step-btn:hover {
+  background: var(--muted-color);
+  color: #fff;
+}
+
+#btn-ver-horarios {
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+}
+
+/* Tarjeta de horarios centrada */
+.horario-card {
+  flex-direction: column;       /* vertical */
+  align-items: center;          /* centra horizontalmente */
+  text-align: center;
+}
+
+.horario-card .ticket-info {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.horario-card #btn-ver-horarios,
+.horario-card #horario {
+  margin: 0.5rem auto;
+  display: block;
+}
+
+/* Ajuste visual para el select de horarios */
+#horario.ticket-input {
+  padding: 0.6rem 1rem;   /* más espacio arriba y abajo */
+  height: auto;           /* que no quede aplastado */
+  line-height: 1.4;       /* mejora legibilidad del texto */
+}
+
+#step-content-4 .ticket-card .form-check-label a {
+  color: var(--museo-red);
+  text-decoration: underline;
+}
+
+#step-content-4 .ticket-card .form-check-label a:hover {
+  color: #8f191e;
+}
+
+
+
+/* Checkboxes */
+.form-check-input:checked {
+    background-color: var(--museo-red);
+    border-color: var(--museo-red);
+}
+
+/* Resumen (Step 4) */
+#step-content-4 .list-group-item {
+    padding: 1rem 1.25rem;
+    border: none;
+    border-bottom: 1px solid #eee;
+}
+
+#step-content-4 .list-group-item strong {
+    color: var(--museo-neutral);
+}
+
+/* ===============================
+   Media queries
+   =============================== */
+@media (min-width: 992px) {
+    .wrapper {
+        border-radius: 8px;
+        margin-bottom: 20px;
+        min-height: calc(100vh - 40px);
+    }
+}
+
+@media (max-width: 768px) {
+    .form-container {
+        width: 90%;
+        padding: 2rem 1.5rem;
+    }
+
+    .progress-step {
+        max-width: 70px;
+        height: 70px;
+        font-size: 0.75rem;
+    }
+    
+     .ticket-card {
+    flex-direction: column; /* Cambia la dirección a columna */
+    align-items: stretch;   /* Estira los elementos para que ocupen el ancho completo */
+    text-align: center;     /* Centra el texto */
+    padding: 1.5rem 1rem;   /* Aumenta el padding para más espacio */
+  }
+
+  .ticket-info,
+  .ticket-quantity {
+    width: 100%;          /* Asegura que cada uno ocupe todo el ancho */
+    margin-bottom: 1rem;  /* Agrega espacio entre ellos */
+  }
+
+  .ticket-quantity {
+    margin-top: 1rem;     /* Agrega espacio superior para separarlo de la info */
+    justify-content: center; /* Centra los botones de cantidad */
+  }
+
+  .ticket-info .ticket-price {
+    margin-bottom: 0.5rem; /* Agrega espacio inferior al precio */
+  }
+    
+     .main-card {
+    max-width: 90%;
+    margin: 2rem auto;
+  }
+}

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museo Casa Kahlo | Lector de Fotos</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .camera-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+        }
+
+        #preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .qr-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 300px;
+            height: auto;
+            border: 2px dashed #fff;
+            box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div ></div>
+
+        <header class="fixed-header">
+            <div class="logo-container text-center">
+                <h5 class="pre-title mt-4">Lector de Fotos</h5>
+                <img src="logo_rojo.png" alt="Museo Casa Kahlo Logo" class="img-fluid brand-logo">
+            </div>
+            <div class="text-section text-center">
+                <p class="subtitle lead">Acerca el código QR a la cámara.</p>
+            </div>
+        </header>
+
+        <main class="scroll-content d-flex justify-content-center align-items-center">
+            <div id="login-container" class="w-100 d-none"></div>
+
+            <div id="app-content" class="w-100 h-100 position-relative">
+                <div class="camera-container h-100">
+                    <video id="preview"></video>
+                    <div class="qr-overlay"></div>
+                </div>
+                <div class="position-absolute top-0 start-0 p-3 w-100">
+                    <p class="text-white text-center lead mt-5 fw-bold" id="status-message">Escaneando código QR...</p>
+                    
+                </div>
+            </div>
+        </main>
+
+        <footer class="fixed-footer">
+            <div class="footer-content d-flex justify-content-center flex-wrap gap-4">
+                <p class="mb-0"><a href="#">Aviso de Privacidad</a></p>
+                <p class="mb-0"><a href="#">Términos y Condiciones</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+
+ <script>
+    
+    let scanner;
+    //const LOCAL_SERVER_URL = 'http://192.168.100.90:3000';
+    const LOCAL_SERVER_URL = 'https://192.168.100.16:3000/enviar-boleto';
+
+    window.onload = function() {
+        startScanner();
+    };
+
+    function startScanner() {
+        const preview = document.getElementById('preview');
+        scanner = new Instascan.Scanner({
+            video: preview,
+            mirror: false
+        });
+
+        scanner.addListener('scan', async content => {
+            document.getElementById('status-message').textContent = "Procesando código QR...";
+
+            try {
+                // The URL is now correct to send to the `/enviar-boleto` endpoint
+                const res = await axios.post(LOCAL_SERVER_URL, {
+                    idReservacion: content,
+                });
+
+                if (res.data.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Código Válido',
+                        text: res.data.msg,
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#dc3545'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Código Inválido',
+                        text: res.data.msg,
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#dc3545'
+                    });
+                }
+            } catch (err) {
+                let errorMsg = 'Error desconocido. No se pudo verificar el código.';
+                
+                if (err.response) {
+                    errorMsg = `El servidor respondió con un error: ${err.response.status}. Mensaje: ${err.response.data.msg || 'No hay mensaje.'}`;
+                } else if (err.request) {
+                    errorMsg = 'Error de conexión con el servidor. Asegúrate de que está funcionando y en la misma red Wi-Fi.';
+                } else {
+                    errorMsg = 'Error al enviar la solicitud.';
+                }
+
+                console.error("Error al verificar QR:", err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de Servidor',
+                    text: err
+                });
+            }
+            document.getElementById('status-message').textContent = "Escaneando código QR...";
+        });
+
+        Instascan.Camera.getCameras().then(cameras => {
+            
+            
+            if (cameras.length > 0) {
+                /*
+                const frontCam = cameras.find(c => c.name.toLowerCase().includes('front'));
+                if (frontCam) {
+                    scanner.start(frontCam);
+                } else {
+                    scanner.start(cameras[0]);
+                }
+                    */
+                    let backCam = cameras.find(c => 
+      c.name.toLowerCase().includes('back') ||
+      c.name.toLowerCase().includes('rear') ||
+      c.name.toLowerCase().includes('environment')
+    );
+
+    if (!backCam && cameras.length > 1) {
+      backCam = cameras[1]; // fallback: la segunda
+    }
+
+    scanner.start(backCam || cameras[0]);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudo acceder a la cámara.'
+                });
+            }
+            
+        }).catch(e => {
+            console.error("Error al iniciar cámara:", e);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo iniciar la cámara.'
+            });
+        });
+    }
+</script>
+</body>
+
+</html>

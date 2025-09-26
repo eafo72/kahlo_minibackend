@@ -1,0 +1,9 @@
+para correr el proyecto:
+pm2 start index.js --name kahlo_minibackend
+
+logs:
+pm2 logs --lines 200
+pm2 flush
+
+crear certs:
+node generate-cert.js
