@@ -5,5 +5,17 @@ logs:
 pm2 logs --lines 200
 pm2 flush
 
-crear certs:
+crear certs: (solo la primera vez)
 node generate-cert.js
+
+
+
+FLUJO TABLET
+- abrir url https://192.168.100.90:3000
+- escanear codigo
+- la api recibe el codigo y responde por udp
+
+
+FLUJO CAMARA
+- la camara escanea el codigo y lo envia a https://192.168.100.90:3000/enviar-qr
+- el endpoint recibe el codigo, revisa si existe en la base de datos y si existe envia una peticion al minmoe para que abra el torniquete

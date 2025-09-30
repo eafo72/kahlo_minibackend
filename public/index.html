@@ -91,7 +91,7 @@
     
     let scanner;
     //const LOCAL_SERVER_URL = 'http://192.168.100.90:3000';
-    const LOCAL_SERVER_URL = 'https://192.168.100.16:3000/enviar-boleto';
+    const LOCAL_SERVER_URL = 'https://192.168.100.90:3000/enviar-boleto';
 
     window.onload = function() {
         startScanner();
@@ -116,7 +116,7 @@
                 if (res.data.ok) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Código Válido',
+                        title: 'Pasa al área de revelado',
                         text: res.data.msg,
                         confirmButtonText: 'OK',
                         confirmButtonColor: '#dc3545'
@@ -155,14 +155,15 @@
             
             
             if (cameras.length > 0) {
-                /*
+                
                 const frontCam = cameras.find(c => c.name.toLowerCase().includes('front'));
                 if (frontCam) {
                     scanner.start(frontCam);
                 } else {
                     scanner.start(cameras[0]);
                 }
-                    */
+                    
+                   /*
                     let backCam = cameras.find(c => 
       c.name.toLowerCase().includes('back') ||
       c.name.toLowerCase().includes('rear') ||
@@ -174,6 +175,7 @@
     }
 
     scanner.start(backCam || cameras[0]);
+    */
             } else {
                 Swal.fire({
                     icon: 'error',
