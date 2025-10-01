@@ -3,6 +3,8 @@ const https = require('https');
 const express = require("express");
 const cors = require("cors");
 const path = require('path');
+const db = require('./config/db')
+const axios = require("axios");
 
 const dgram = require("dgram");
 
@@ -31,6 +33,72 @@ app.post("/enviar-boleto", (req, res) => {
     console.log("UDP enviado:", mensaje.toString());
     res.json({ ok: true, msg: "UDP enviado" });
   });
+});
+
+// Configuración del MinMoe
+const MINMOE_IP = "192.168.100.99";   // IP del MinMoe
+const MINMOE_USER = "admin";         // Usuario
+const MINMOE_PASS = "kahlo$2025"; 
+
+// Función para abrir el torniquete
+async function abrirTorniquete() {
+  const url = `http://${MINMOE_IP}/ISAPI/AccessControl/RemoteControl/door/1`;
+
+  try {
+    const response = await axios.post(
+      url,
+      '<RemoteControlDoor><cmd>open</cmd></RemoteControlDoor>',
+      {
+        headers: { "Content-Type": "application/xml" },
+        auth: { username: MINMOE_USER, password: MINMOE_PASS },
+        timeout: 3000
+      }
+    );
+    console.log("✅ Torniquete abierto:", response.status);
+  } catch (err) {
+    console.error("❌ Error al abrir el torniquete:", err.message);
+  }
+}
+
+//recibe codigo de la camara de la entrada
+app.post("/enviar-qr", async (req, res) => {
+  try {
+   
+      if(!req.body || Object.keys(req.body).length === 0){
+	 //console.log("Evento recibido:", req.body);		
+	 return res.json({status: "keep-alive"})
+      }
+
+    console.log("evento recibido", req.body);
+
+
+    // Dependiendo del firmware, puede venir en cardNo o QRString
+    const codigoQR = req.body?.CardNo?.[0] || req.body?.QRString;
+
+    if (!codigoQR) {
+      return res.status(400).send("QR no encontrado en payload");
+    }
+
+    console.log("🔑 QR leído:", codigoQR);
+
+    // Buscar en base de datos
+    const [rows] = await db.pool.query(
+      "SELECT * FROM venta WHERE id_reservacion = ?",
+      [codigoQR]
+    );
+
+    if (rows.length > 0) {
+      console.log("✅ QR válido, abriendo torniquete...");
+      await abrirTorniquete();
+      res.send("Acceso permitido");
+    } else {
+      console.log("❌ QR inválido");
+      res.status(403).send("Acceso denegado");
+    }
+  } catch (err) {
+    console.error("❌ Error interno:", err.message);
+    res.status(500).send("Error interno");
+  }
 });
 
 app.get("/ping", (req, res) => {
