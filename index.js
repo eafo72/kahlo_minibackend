@@ -85,10 +85,10 @@ app.post("/enviar-qr", async (req, res) => {
     if (rows.length > 0) {
       console.log("✅ QR válido, abriendo torniquete...");
       await abrirTorniquete();
-      res.send("Acceso permitido");
+      res.json({ error: false, msg: "Acceso permitido" });
     } else {
       console.log("❌ QR inválido");
-      res.status(403).send("Acceso denegado");
+      res.json({ error: false, msg: "Codigo QR inválido, acceso denegado" });
     }
   } catch (err) {
     console.error("❌ Error interno:", err.message);
