@@ -70,7 +70,7 @@ h1, h2, h3, h4, h5, h6 {
    Logo y encabezado
    =============================== */
 .logo-container {
-    height: 10vh; 
+    height: 20vh; 
     margin: 0; 
     padding: 0;
     justify-content: center;
@@ -79,13 +79,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .brand-logo {
     width: auto;
-    max-height: 7vh;
+    max-height: 15vh;
 }
 
 .text-section {
-    padding-right:15px;
-    padding-left:15px;
-    padding-top: 15px;
+    padding: 0 15px;
+    height: 15vh;
     justify-content: center;
     align-content: center;
 }
