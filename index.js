@@ -6,6 +6,10 @@ const axios = require("axios");
 
 const app = express();
 const upload = multer();
+const path = require('path');
+
+//servir archivos estáticos desde la carpeta "public"
+app.use(express.static(path.join(__dirname, 'public')))
 
 // --- Configuración MinMoe ---
 const MINMOE_IP = "192.168.100.92";
@@ -101,5 +105,9 @@ async function validarAccesoRemoto(serialNo, resultado) {
     console.error("⚠️ Error al validar acceso remoto:", err.message);
   }
 }
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.listen(3000, () => console.log('Servidor corriendo en puerto 3000'));
