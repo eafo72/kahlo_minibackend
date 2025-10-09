@@ -19,3 +19,7 @@ FLUJO TABLET
 FLUJO CAMARA
 - la camara escanea el codigo y lo envia a https://192.168.100.90:3000/enviar-qr
 - el endpoint recibe el codigo, revisa si existe en la base de datos y si existe envia una peticion al minmoe para que abra el torniquete
+
+OJO:
+En la rama servidor/minmoe esta el proyecto que hace funcionar el minmoe y la landing del hubspot
+En la rama   esta el servidor de la foto 
