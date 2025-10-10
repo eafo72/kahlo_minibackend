@@ -3,6 +3,9 @@ const multer = require('multer');
 const { parseStringPromise } = require('xml2js');
 const db = require('./config/db');
 const axios = require("axios");
+const DigestFetch = require("digest-fetch").default;
+
+
 
 const app = express();
 const upload = multer();
@@ -24,7 +27,7 @@ app.post('/enviar-qr', upload.none(), async (req, res) => {
       return res.status(400).json({ ok: false, msg: "No se encontró evento en el body" });
     }
 
-    // Detectar si es JSON o XML
+    // Detectar si es JSON o XML 
     let event;
     if (rawData.trim().startsWith('{')) {
       event = JSON.parse(rawData);
@@ -46,19 +49,57 @@ app.post('/enviar-qr', upload.none(), async (req, res) => {
     console.log('Número escaneado:', cardNo);
     console.log('Serial del evento:', serialNo);
 
-    // Buscar en DB
-    const [rows] = await db.pool.query("SELECT * FROM venta WHERE id_reservacion = ?", [cardNo]);
-
-    if (rows.length > 0) {
-      console.log("✅ QR válido, abriendo torniquete...");
-      await validarAccesoRemoto(serialNo, "success");
-      await abrirTorniquete();
-      return res.json({ error: false, msg: "Acceso permitido" });
-    } else {
-      console.log("❌ QR inválido, no existe en DB");
+    // Obtener venta + fecha_ida
+    const query = `
+            SELECT v.*, vt.fecha_ida
+            FROM venta AS v
+            INNER JOIN viajeTour AS vt ON v.viajeTour_id = vt.id
+            WHERE v.id_reservacion = ?;
+        `;
+    const [ventaResult] = await db.pool.query(query, [cardNo]);
+    if (ventaResult.length === 0) {
+      console.log("❌ QR INVALIDO no existe");
       await validarAccesoRemoto(serialNo, "failed");
-      return res.json({ error: true, msg: "Código QR inválido, acceso denegado" });
+      return res.json({ error: true, msg: "El id de reservacion no existe." });
     }
+
+    const venta = ventaResult[0];
+    const noBoletos = parseInt(venta.no_boletos);
+    const checkinActual = venta.checkin || 0;
+    const fechaIdaTourUTC = new Date(venta.fecha_ida);
+    const now = new Date();
+    const nowCDMX = new Date(now.toLocaleString("en-US", { timeZone: "America/Mexico_City" }));
+    const fechaIdaTourCDMX = new Date(fechaIdaTourUTC.toLocaleString("en-US", { timeZone: "America/Mexico_City" }));
+
+    // VERIFICACIÓN DEL DÍA (comentada por ahora)
+    if (nowCDMX.toDateString() !== fechaIdaTourCDMX.toDateString()) {
+      console.log("❌ QR INVALIDO no corresponde la fecha");
+      await validarAccesoRemoto(serialNo, "failed");
+      return res.json({ error: true, msg: `Check-in solo permitido el día del tour (${fechaIdaTourCDMX.toLocaleDateString("es-MX")}).` });
+    }
+
+    if (checkinActual >= noBoletos) {
+      console.log("❌ QR INVALIDO ya se han registrado todos los boletos");
+      await validarAccesoRemoto(serialNo, "failed");
+      return res.json({ error: true, msg: `No se puede hacer checkin. Ya se han registrado ${checkinActual} de ${noBoletos} boletos comprados.` });
+    }
+
+    const nuevoCheckin = checkinActual + 1;
+    // Guardar fecha actual formateada (CDMX)
+    let today = new Date();
+    let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    let time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
+    let fecha = date + ' ' + time;
+    const queryUpdate = `
+            UPDATE venta
+            SET checkin = ?, updated_at = ?
+            WHERE id_reservacion = ?;
+        `;
+    await db.pool.query(queryUpdate, [nuevoCheckin, fecha, cardNo]);
+
+    console.log("✅ QR válido, abriendo torniquete...");
+    await validarAccesoRemoto(serialNo, "success");
+    return res.json({ error: false, msg: "Acceso permitido" });
 
   } catch (err) {
     console.error('Error procesando evento:', err);
@@ -66,24 +107,6 @@ app.post('/enviar-qr', upload.none(), async (req, res) => {
   }
 });
 
-// --- Función para abrir el torniquete ---
-async function abrirTorniquete() {
-  const url = `http://${MINMOE_IP}/ISAPI/AccessControl/RemoteControl/door/1`;
-  try {
-    const response = await axios.post(
-      url,
-      '<RemoteControlDoor><cmd>open</cmd></RemoteControlDoor>',
-      {
-        headers: { "Content-Type": "application/xml" },
-        auth: { username: MINMOE_USER, password: MINMOE_PASS },
-        timeout: 3000
-      }
-    );
-    console.log("🚪 Torniquete abierto:", response.status);
-  } catch (err) {
-    console.error("❌ Error al abrir el torniquete:", err.message);
-  }
-}
 
 // --- Función para validar acceso remoto (la del Postman) ---
 async function validarAccesoRemoto(serialNo, resultado) {
@@ -95,12 +118,17 @@ async function validarAccesoRemoto(serialNo, resultado) {
         checkResult: resultado // "success" o "failed"
       }
     };
-    const response = await axios.put(url, body, {
-      auth: { username: MINMOE_USER, password: MINMOE_PASS },
+   
+    const client = new DigestFetch(MINMOE_USER, MINMOE_PASS);
+
+    const response = await client.fetch(url, {
+      method: "PUT",
+      body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },
-      timeout: 3000
     });
-    console.log(`📡 Validación de acceso enviada (${resultado}) →`, response.data);
+
+    const data = await response.json();
+    console.log(`📡 Validación de acceso enviada` + JSON.stringify(data, null, 2));
   } catch (err) {
     console.error("⚠️ Error al validar acceso remoto:", err.message);
   }

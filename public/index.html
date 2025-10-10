@@ -9,7 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script>const API_BASE_URL = "https://api.museodesarrollo.info"</script>
+  <script>const API_BASE_URL = "https://api.museodesarrollo.info";</script>
 </head>
 <body class="bg-light d-flex justify-content-center align-items-center vh-100">
 
@@ -58,22 +58,7 @@
       document.getElementById("mensaje-exito").classList.remove("d-none");
       window.location.href = 'https://museocasakahlo.org';
       
-      // 🔑 Paso Crítico: Redirigir a la URL de autenticación de Aruba.
-      // Los nombres de los parámetros varían, probamos con el más común: 'login_url'
-      /*
-      const params = new URLSearchParams(window.location.search);
-      const arubaAuthUrl = params.get('login_url'); // <--- Debes verificar el nombre del parámetro en la URL
-
-      if (arubaAuthUrl) {
-          // Redirige al cliente a la URL de login final de Aruba para liberar el acceso.
-          // Si Aruba responde a la API con la cadena "InstantOn.Acknowledge", la redirección
-          // inmediata podría no ser necesaria, pero es la forma más robusta de asegurar el acceso.
-          window.location.href = arubaAuthUrl;
-      } else {
-          // Si la URL no tiene parámetros de login (ej: pruebas directas), solo muestra el mensaje.
-          console.warn("No se encontró el parámetro 'login_url' de Aruba. Verifique los parámetros de la URL.");
-      }
-      */
+      
     }
 
     
